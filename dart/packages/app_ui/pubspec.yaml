@@ -1,0 +1,21 @@
+name: app_ui
+description: Material widgets, theme builder and persisted preferences shared by the apps. Texts are always passed in by the app, so the package has no translations of its own.
+version: 0.1.0
+publish_to: none
+
+environment:
+  sdk: ">=3.5.0 <4.0.0"
+  flutter: ">=3.24.0"
+
+dependencies:
+  app_core:
+    path: ../app_core
+  flutter:
+    sdk: flutter
+  flutter_riverpod: ^2.5.1
+  shared_preferences: ^2.3.0
+
+dev_dependencies:
+  flutter_lints: ^6.0.0
+  flutter_test:
+    sdk: flutter

@@ -1,0 +1,8 @@
+.dart_tool/
+.packages
+build/
+# Libraries do not commit their lock file: the apps that use them do.
+pubspec.lock
+.DS_Store
+.idea/
+.flutter-plugins-dependencies

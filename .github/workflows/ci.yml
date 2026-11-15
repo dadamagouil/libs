@@ -1,0 +1,57 @@
+name: CI
+
+# Checks every package, the SQL helpers and the Edge Function helpers.
+# The generic parts (workflow lint, secrets scan, Flutter checks, SQL tests) are reusable workflows of
+# dadamagouil/devops.
+# Runner: the repository variable RUNNER_LABELS (a JSON list such as ["self-hosted","Linux","X64"]) picks the
+# machine; without it the jobs run on GitHub runners. The SQL job always runs on GitHub runners because its
+# throw-away Postgres is a Docker service container.
+on:
+  push:
+    branches: [develop]
+  pull_request:
+    # ready_for_review: a pull request opened as draft is checked again when it becomes ready.
+    types: [opened, synchronize, reopened, ready_for_review]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  quality:
+    uses: dadamagouil/devops/.github/workflows/quality.yml@develop
+    with:
+      runner-labels: ${{ vars.RUNNER_LABELS || '["ubuntu-latest"]' }}
+
+  dart-packages:
+    strategy:
+      fail-fast: false
+      matrix:
+        package: [app_core, app_supabase, app_ui]
+    uses: dadamagouil/devops/.github/workflows/flutter-checks.yml@develop
+    with:
+      app-dir: dart/packages/${{ matrix.package }}
+      flutter-version: "3.35.5"
+      runner-labels: ${{ vars.RUNNER_LABELS || '["ubuntu-latest"]' }}
+
+  sql:
+    uses: dadamagouil/devops/.github/workflows/supabase-sql-tests.yml@develop
+    with:
+      supabase-dir: sql
+
+  typescript-edge-functions:
+    runs-on: ${{ fromJSON(vars.RUNNER_LABELS || '["ubuntu-latest"]') }}
+    steps:
+      - uses: actions/checkout@v7
+      # Checks the tools on a self-hosted runner and says exactly what is missing.
+      - uses: dadamagouil/devops/.github/actions/prepare-runner@develop
+        with:
+          commands: "git curl tar"
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+      - run: node --experimental-strip-types --test typescript/edge-functions/edge_functions_test.ts
