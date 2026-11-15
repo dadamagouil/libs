@@ -42,11 +42,11 @@ In the app's `pubspec.yaml`, take only what you need (`app_ui` pulls `app_core` 
 ```yaml
 dependencies:
   app_core:
-    git: { url: https://github.com/dadamagouil/libs, path: dart/packages/app_core, ref: develop }
+    git: { url: https://github.com/dadamagouil/libs, path: dart/packages/app_core, ref: v1.0.0 }
   app_supabase:
-    git: { url: https://github.com/dadamagouil/libs, path: dart/packages/app_supabase, ref: develop }
+    git: { url: https://github.com/dadamagouil/libs, path: dart/packages/app_supabase, ref: v1.0.0 }
   app_ui:
-    git: { url: https://github.com/dadamagouil/libs, path: dart/packages/app_ui, ref: develop }
+    git: { url: https://github.com/dadamagouil/libs, path: dart/packages/app_ui, ref: v1.0.0 }
 ```
 
 Then `flutter pub get`. Pin `ref:` to a tag once releases exist, so an update of `libs` never breaks an app by

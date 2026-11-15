@@ -23,8 +23,9 @@ concurrency:
 
 jobs:
   quality:
-    uses: dadamagouil/devops/.github/workflows/quality.yml@develop
+    uses: dadamagouil/devops/.github/workflows/quality.yml@v1.0.2
     with:
+      devops-ref: v1.0.2
       runner-labels: ${{ vars.RUNNER_LABELS || '["ubuntu-latest"]' }}
 
   dart-packages:
@@ -32,15 +33,17 @@ jobs:
       fail-fast: false
       matrix:
         package: [app_core, app_supabase, app_ui]
-    uses: dadamagouil/devops/.github/workflows/flutter-checks.yml@develop
+    uses: dadamagouil/devops/.github/workflows/flutter-checks.yml@v1.0.2
     with:
+      devops-ref: v1.0.2
       app-dir: dart/packages/${{ matrix.package }}
       flutter-version: "3.35.5"
       runner-labels: ${{ vars.RUNNER_LABELS || '["ubuntu-latest"]' }}
 
   sql:
-    uses: dadamagouil/devops/.github/workflows/supabase-sql-tests.yml@develop
+    uses: dadamagouil/devops/.github/workflows/supabase-sql-tests.yml@v1.0.2
     with:
+      devops-ref: v1.0.2
       supabase-dir: sql
 
   typescript-edge-functions:
@@ -48,7 +51,7 @@ jobs:
     steps:
       - uses: actions/checkout@v7
       # Checks the tools on a self-hosted runner and says exactly what is missing.
-      - uses: dadamagouil/devops/.github/actions/prepare-runner@develop
+      - uses: dadamagouil/devops/.github/actions/prepare-runner@v1.0.2
         with:
           commands: "git curl tar"
       - uses: actions/setup-node@v4
